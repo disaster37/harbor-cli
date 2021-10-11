@@ -33,16 +33,18 @@ jobs:
     # Run build of the application
     - name: Run build
       run: make build
-    - uses: codecov/codecov-action@v2
-      with:
-        files: coverage.txt
-        flags: unittests
-        fail_ci_if_error: true
     # Run vet & lint on the code
     - name: Run vet & lint
       run: |
         go vet .
         golint .
+    - name: Run tests
+      run: make test
+    - uses: codecov/codecov-action@v2
+      with:
+        files: coverage.txt
+        flags: unittests
+        fail_ci_if_error: true
 
 
   release:
