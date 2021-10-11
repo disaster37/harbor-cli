@@ -1,0 +1,141 @@
+package harborapi
+
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+
+	"github.com/go-resty/resty/v2"
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	basePathArtifact = "/projects/%s/repositories/%s/artifacts/%s"
+)
+
+type ArtifactAPIImpl struct {
+	client *resty.Client
+}
+
+func NewArtifactAPI(client *resty.Client) ArtifactAPI {
+	return &ArtifactAPIImpl{
+		client: client,
+	}
+}
+
+type Artifact struct {
+	ID           int64        `json:"id"`
+	Digest       string       `json:"digest"`
+	Size         int64        `json:"size,omitempty"`
+	PushTime     time.Time    `json:"push_time,omitempty"`
+	PullTime     time.Time    `json:"pull_time,omitempty"`
+	Icon         string       `json:"icon,omitempty"`
+	RepositoryID int64        `json:"repository_id,omitempty"`
+	ProjectID    int64        `json:"project_id,omitempty"`
+	Type         string       `json:"type,omitempty"`
+	ScanOverview ScanOverview `json:"scan_overview,omitempty"`
+}
+
+func (api *ArtifactAPIImpl) Get(project, repositoryName, artifactName string) (*Artifact, error) {
+	if project == "" {
+		return nil, errors.New("You must need provide project")
+	}
+	if repositoryName == "" {
+		return nil, errors.New("You must need provide repository name")
+	}
+	if artifactName == "" {
+		return nil, errors.New("You must need provide artifact name")
+	}
+
+	path := fmt.Sprintf(basePathArtifact, project, repositoryName, artifactName)
+
+	resp, err := api.client.R().
+		SetQueryParam("with_scan_overview", "true").
+		Get(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode() >= 300 {
+		if resp.StatusCode() == 404 {
+			return nil, nil
+		}
+		return nil, errors.Errorf("Error when get artifact %s/%s/%s: %s", project, repositoryName, artifactName, resp.Body())
+	}
+
+	artifact := new(Artifact)
+	if err := json.Unmarshal(resp.Body(), artifact); err != nil {
+		return nil, err
+	}
+
+	log.Debugf("Artifact: %+v", artifact)
+
+	return artifact, nil
+}
+
+func (api *ArtifactAPIImpl) GetVulnerabilities(project, repositoryName, artifactName string) (VulnerabilityReportResponse, error) {
+	if project == "" {
+		return nil, errors.New("You must need provide project")
+	}
+	if repositoryName == "" {
+		return nil, errors.New("You must need provide repository name")
+	}
+	if artifactName == "" {
+		return nil, errors.New("You must need provide artifact name")
+	}
+
+	path := fmt.Sprintf(basePathArtifact+"/additions/vulnerabilities", project, repositoryName, artifactName)
+
+	resp, err := api.client.R().Get(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode() >= 300 {
+		if resp.StatusCode() == 404 {
+			return nil, nil
+		}
+		return nil, errors.Errorf("Error when get vulnerabilities for %s/%s/%s: %s", project, repositoryName, artifactName, resp.Body())
+	}
+
+	report := new(VulnerabilityReportResponse)
+	if err := json.Unmarshal(resp.Body(), report); err != nil {
+		return nil, err
+	}
+
+	log.Debugf("Vulnerability report: %+v", report)
+
+	return *report, nil
+}
+
+func (api *ArtifactAPIImpl) Delete(project, repositoryName, artifactName string) error {
+	if project == "" {
+		return errors.New("You must need provide project")
+	}
+	if repositoryName == "" {
+		return errors.New("You must need provide repository name")
+	}
+	if artifactName == "" {
+		return errors.New("You must need provide artifact name")
+	}
+
+	path := fmt.Sprintf(basePathArtifact, project, repositoryName, artifactName)
+
+	resp, err := api.client.R().
+		Delete(path)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode() >= 300 {
+		if resp.StatusCode() == 404 {
+			return nil
+		}
+		return errors.Errorf("Error when delete artifact %s/%s/%s: %s", project, repositoryName, artifactName, resp.Body())
+	}
+
+	log.Debugf("Artifact successfully deleted %s/%s/%s", project, repositoryName, artifactName)
+
+	return nil
+}
