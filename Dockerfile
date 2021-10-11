@@ -3,8 +3,8 @@ FROM golang:1.16-alpine as builder
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 WORKDIR /go/src/app
 COPY . .
-RUN \
-  make build
+RUN apk add --no-cache make
+RUN make build
 
 
 FROM redhat/ubi8-minimal
