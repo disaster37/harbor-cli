@@ -49,6 +49,11 @@ func run(args []string) error {
 			Usage: "The timeout in second",
 			Value: 60 * time.Second,
 		}),
+		altsrc.NewBoolFlag(&cli.BoolFlag{
+			Name:  "self-signed-certificate",
+			Usage: "Don't check remote certificat",
+			Value: false,
+		}),
 		&cli.BoolFlag{
 			Name:  "debug",
 			Usage: "Display debug output",
