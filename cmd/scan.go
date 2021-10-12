@@ -15,6 +15,13 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var SeverityCode = map[string]int{
+	"low":      1,
+	"medium":   2,
+	"high":     3,
+	"critical": 4,
+}
+
 func CheckScanVulnerability(c *cli.Context) error {
 	client, err := getClientWrapper(c)
 	if err != nil {
@@ -78,9 +85,9 @@ func checkScanVulnerability(project string, repositoryName string, artifactName 
 	table.Append([]string{"Severity", report.Severity})
 	table.Append([]string{"Totale", fmt.Sprintf("%d", report.Summary.Total)})
 	table.Append([]string{"Fixable", fmt.Sprintf("%d", report.Summary.Fixable)})
-	table.Append([]string{"Severity High", fmt.Sprintf("%d", report.Summary.Summary["High"])})
-	table.Append([]string{"Severity Medium", fmt.Sprintf("%d", report.Summary.Summary["Medium"])})
-	table.Append([]string{"Severity Low", fmt.Sprintf("%d", report.Summary.Summary["Low"])})
+	for name, value := range report.Summary.Summary {
+		table.Append([]string{fmt.Sprintf("Severity %s", name), fmt.Sprintf("%d", value)})
+	}
 	table.Render()
 
 	// Get and display vulnerabilities
@@ -99,26 +106,8 @@ func checkScanVulnerability(project string, repositoryName string, artifactName 
 	table.Render()
 
 	// Compute if error base on current Severity
-	switch strings.ToLower(severity) {
-	case "high":
-		if report.Severity == "High" {
-			return errors.Errorf("Current severity is %s", report.Severity)
-		}
-		break
-	case "medium":
-		if report.Severity == "High" || report.Severity == "Medium" {
-			return errors.Errorf("Current severity is %s", report.Severity)
-		}
-		break
-	case "low":
-		if report.Severity == "High" || report.Severity == "Medium" || report.Severity == "Low" {
-			return errors.Errorf("Current severity is %s", report.Severity)
-		}
-		break
-	case "":
-		break
-	default:
-		return errors.Errorf("Severity must be high, medium or low")
+	if severity != "" && SeverityCode[strings.ToLower(report.Severity)] >= SeverityCode[strings.ToLower(severity)] {
+		return errors.Errorf("Current severity is %s", report.Severity)
 	}
 
 	return nil
