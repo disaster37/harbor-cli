@@ -4,7 +4,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 WORKDIR /go/src/app
 COPY . .
 RUN apk add --no-cache make
-RUN make build
+RUN CGO_ENABLED=0 make build
 
 
 FROM redhat/ubi8-minimal
