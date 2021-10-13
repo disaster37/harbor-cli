@@ -77,7 +77,7 @@ func (api *ArtifactAPIImpl) Scan(project, repositoryName, artifactName string) e
 	}
 
 	if resp.StatusCode() >= 300 {
-		return errors.Errorf("Error when run scan on %s/%s/%s: %s", project, repositoryName, artifactName, resp.String())
+		return errors.Errorf("Error when run scan on %s/%s/%s (%d): %s", project, repositoryName, artifactName, resp.StatusCode(), resp.String())
 	}
 
 	return nil
