@@ -110,7 +110,7 @@ jobs:
       - name: Inject version on CLI
         run: |
           echo ${GITHUB_SHA::8}
-          sed -i 's/app.Version = "develop"/app.Version = "develop-${GITHUB_SHA::8}"/' main.go
+          sed -i "s/app.Version = \"develop\"/app.Version = \"develop-${GITHUB_SHA::8}\"/" main.go
           cat main.go
       - name: Build and push
         id: docker_build
