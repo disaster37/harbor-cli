@@ -11,7 +11,11 @@ func DeleteArtifact(c *cli.Context) error {
 		return err
 	}
 
-	return deleteArtifact(c.String("project"), c.String("repository"), c.String("artifact"), client)
+	if err := deleteArtifact(c.String("project"), c.String("repository"), c.String("artifact"), client); err != nil {
+		return err
+	}
+
+	log.Infof("Successfully remove artifact %s/%s/%s", c.String("project"), c.String("repository"), c.String("artifact"))
 
 }
 
