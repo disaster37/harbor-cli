@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/disaster37/harbor-cli/harbor"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
 
@@ -16,7 +17,7 @@ func DeleteArtifact(c *cli.Context) error {
 	}
 
 	log.Infof("Successfully remove artifact %s/%s/%s", c.String("project"), c.String("repository"), c.String("artifact"))
-
+	return nil
 }
 
 func deleteArtifact(project, repository, artifact string, client *harbor.Client) error {
