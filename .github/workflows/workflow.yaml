@@ -108,7 +108,9 @@ jobs:
             type=semver,pattern={{version}}
             type=sha
       - name: Inject version on CLI
-        run: sed -i 's/app.Version = "develop"/app.Version = "develop-${GITHUB_SHA::8}"/' main.go
+        run: |
+          sed -i 's/app.Version = "develop"/app.Version = "develop-${GITHUB_SHA::8}"/' main.go
+          cat main.go
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
