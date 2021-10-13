@@ -118,7 +118,7 @@ func run(args []string) error {
 					Required: true,
 				},
 			},
-			Action: cmd.CheckScanVulnerability,
+			Action: cmd.DeleteArtifact,
 		},
 	}
 
