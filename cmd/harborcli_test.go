@@ -41,7 +41,7 @@ func (t *CmdTestSuite) AfterTest(suiteName, testName string) {
 
 func (t *CmdTestSuite) TestGetClient() {
 
-	client, err := getClient("http://localhost", "user", "password", false, nil, 1*time.Second)
+	client, err := getClient("http://localhost", "user", "password", false, nil, 1*time.Second, true)
 	assert.NoError(t.T(), err)
 	assert.NotNil(t.T(), client)
 }
