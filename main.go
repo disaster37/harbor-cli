@@ -99,7 +99,7 @@ func run(args []string) error {
 		},
 		{
 			Name:     "delete-artifact",
-			Usage:    "Delete artifact from Harbor",
+			Usage:    "Delete artifact from Harbor. If tag provided, it only delete artifact if is the last tag, else it only delete the tag",
 			Category: "Artifact",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
@@ -117,8 +117,46 @@ func run(args []string) error {
 					Usage:    "The artifact name",
 					Required: true,
 				},
+				&cli.StringFlag{
+					Name:  "tag",
+					Usage: "The tag name",
+					Value: "",
+				},
 			},
 			Action: cmd.DeleteArtifact,
+		},
+		{
+			Name:     "promote-artifact",
+			Usage:    "Promote artifact from Harbor",
+			Category: "Artifact",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "repository",
+					Usage:    "The repository name",
+					Required: true,
+				},
+				&cli.StringFlag{
+					Name:     "project",
+					Usage:    "The project name",
+					Required: true,
+				},
+				&cli.StringFlag{
+					Name:     "artifact",
+					Usage:    "The artifact name",
+					Required: true,
+				},
+				&cli.StringFlag{
+					Name:     "source-tag",
+					Usage:    "The tag from",
+					Required: true,
+				},
+				&cli.StringFlag{
+					Name:     "target-tag",
+					Usage:    "The tag to",
+					Required: true,
+				},
+			},
+			Action: cmd.PromoteArtifact,
 		},
 	}
 

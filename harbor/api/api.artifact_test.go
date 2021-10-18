@@ -46,6 +46,46 @@ func (t *APITestSuite) TestGet() {
 
 }
 
+func (t *APITestSuite) TestGetFromTag() {
+
+	// Normal use case
+	response := []Artifact{
+		{
+			ID: 10,
+		},
+	}
+	responder, err := httpmock.NewJsonResponder(200, response)
+	if err != nil {
+		panic(err)
+	}
+	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts?q=tags%3DtestTag", responder)
+	artifact, err := t.client.Artifact().GetFromTag("projectTest", "repositoryTest", "testTag")
+	assert.NoError(t.T(), err)
+	assert.Equal(t.T(), response[0].ID, artifact.ID)
+
+	// Not found
+	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts?q=tags%3DtestTag",
+		httpmock.NewStringResponder(404, ""))
+	artifact, err = t.client.Artifact().GetFromTag("projectTest", "repositoryTest", "testTag")
+	assert.NoError(t.T(), err)
+	assert.Nil(t.T(), artifact)
+
+	// Not authorized
+	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts?q=tags%3DtestTag",
+		httpmock.NewStringResponder(403, ""))
+	artifact, err = t.client.Artifact().Get("projectTest", "repositoryTest", "testTag")
+	assert.Error(t.T(), err)
+
+	// error use cases
+	_, err = t.client.Artifact().GetFromTag("", "repositoryTest", "testTag")
+	assert.Error(t.T(), err)
+	_, err = t.client.Artifact().GetFromTag("projectTest", "", "testTag")
+	assert.Error(t.T(), err)
+	_, err = t.client.Artifact().GetFromTag("projectTest", "repositoryTest", "")
+	assert.Error(t.T(), err)
+
+}
+
 func (t *APITestSuite) TestGetVulnerabilities() {
 	// Normal use case
 	response := VulnerabilityReportResponse{

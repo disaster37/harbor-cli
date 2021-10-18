@@ -64,7 +64,11 @@ It return the following code:
 
 ### Delete artifact (docker image)
 
-It permit to delete a specific artifact (docker image).
+It permit to delete a specific artifact (docker image) or a tag.
+If you not provide the tag, it will delete the artifact.
+If you povide the tag:
+  - it will delete the artifact if the tag provided is the only tag of the artifact
+  - else it only delete the tag
 
 We use it on Jenkins CI step just after destroy volatile environment for user tests on PR pipeline.
 
@@ -79,6 +83,32 @@ You need to set following parameter:
 - **--project**: The project name
 - **--registry**: The registry name
 - **--artifact**: The artifact name.
+- **--tag** (optionnal): The tag name.
+
+It return the following code:
+- `0`: all work fine
+- `1`: some internale errors
+
+### Promote artifact (docker image)
+
+It permit to promote artifact from existing tag to new tag.
+If will add the new tag on artifact and delete the old tag.
+If target tag already in use, it will first remove the tag or artfiact (if only on tag).
+
+We use it on Jenkins just before to start CD to deploy a unique tag 
+
+Sample of command:
+
+```bash
+harbor-cli --url https://harbor.company.com/api/v2.0 --username admin --password admin promote-artifact --project team1 --repository harbor --artifact build-PR-1 --source-tag build-PR-1 --target-tag v1.0.0
+```
+
+You need to set following parameter:
+
+- **--project**: The project name
+- **--registry**: The registry name
+- **--artifact**: The artifact name.
+- **--tag** (optionnal): The tag name.
 
 It return the following code:
 - `0`: all work fine

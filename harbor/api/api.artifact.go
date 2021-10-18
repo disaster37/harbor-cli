@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	basePathArtifact = "/projects/%s/repositories/%s/artifacts/%s"
+	basePathArtifact       = "/projects/%s/repositories/%s/artifacts/%s"
+	basePathArtifactSearch = "/projects/%s/repositories/%s/artifacts"
 )
 
 type ArtifactAPIImpl struct {
@@ -83,6 +84,48 @@ func (api *ArtifactAPIImpl) Get(project, repositoryName, artifactName string) (*
 	log.Debugf("Artifact: %+v", artifact)
 
 	return artifact, nil
+}
+
+func (api *ArtifactAPIImpl) GetFromTag(project, repositoryName, tagName string) (*Artifact, error) {
+	if project == "" {
+		return nil, errors.New("You must need provide project")
+	}
+	if repositoryName == "" {
+		return nil, errors.New("You must need provide repository name")
+	}
+	if tagName == "" {
+		return nil, errors.New("You must need provide tag name")
+	}
+
+	path := fmt.Sprintf(basePathArtifactSearch, project, repositoryName)
+
+	resp, err := api.client.R().
+		SetQueryParam("q", fmt.Sprintf("tags=%s", tagName)).
+		Get(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode() >= 300 {
+		if resp.StatusCode() == 404 {
+			return nil, nil
+		}
+		return nil, errors.Errorf("Error when get artifact %s/%s:%s: %s", project, repositoryName, tagName, resp.Body())
+	}
+
+	artifacts := make([]*Artifact, 0)
+
+	if err := json.Unmarshal(resp.Body(), &artifacts); err != nil {
+		return nil, err
+	}
+
+	if len(artifacts) == 0 {
+		return nil, nil
+	}
+
+	log.Debugf("Artifact: %+v", artifacts[0])
+
+	return artifacts[0], nil
 }
 
 func (api *ArtifactAPIImpl) GetVulnerabilities(project, repositoryName, artifactName string) (VulnerabilityReportResponse, error) {

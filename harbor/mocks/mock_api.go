@@ -128,6 +128,21 @@ func (mr *MockArtifactAPIMockRecorder) Get(arg0, arg1, arg2 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockArtifactAPI)(nil).Get), arg0, arg1, arg2)
 }
 
+// GetFromTag mocks base method.
+func (m *MockArtifactAPI) GetFromTag(arg0, arg1, arg2 string) (*harborapi.Artifact, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFromTag", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*harborapi.Artifact)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFromTag indicates an expected call of GetFromTag.
+func (mr *MockArtifactAPIMockRecorder) GetFromTag(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromTag", reflect.TypeOf((*MockArtifactAPI)(nil).GetFromTag), arg0, arg1, arg2)
+}
+
 // GetTags mocks base method.
 func (m *MockArtifactAPI) GetTags(arg0, arg1, arg2 string) ([]harborapi.Tag, error) {
 	m.ctrl.T.Helper()
