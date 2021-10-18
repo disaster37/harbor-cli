@@ -105,5 +105,6 @@ make test
 
 ### Generate mocks
 ```
+go install github.com/golang/mock/mockgen@v1.6.0
 mockgen -destination=harbor/mocks/mock_api.go -package=mocks github.com/disaster37/harbor-cli/harbor/api API,ArtifactAPI
 ```
