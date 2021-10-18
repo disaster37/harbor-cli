@@ -71,6 +71,20 @@ func (m *MockArtifactAPI) EXPECT() *MockArtifactAPIMockRecorder {
 	return m.recorder
 }
 
+// AddTag mocks base method.
+func (m *MockArtifactAPI) AddTag(arg0, arg1, arg2, arg3 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTag", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddTag indicates an expected call of AddTag.
+func (mr *MockArtifactAPIMockRecorder) AddTag(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTag", reflect.TypeOf((*MockArtifactAPI)(nil).AddTag), arg0, arg1, arg2, arg3)
+}
+
 // Delete mocks base method.
 func (m *MockArtifactAPI) Delete(arg0, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
@@ -83,6 +97,20 @@ func (m *MockArtifactAPI) Delete(arg0, arg1, arg2 string) error {
 func (mr *MockArtifactAPIMockRecorder) Delete(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockArtifactAPI)(nil).Delete), arg0, arg1, arg2)
+}
+
+// DeleteTag mocks base method.
+func (m *MockArtifactAPI) DeleteTag(arg0, arg1, arg2, arg3 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTag", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTag indicates an expected call of DeleteTag.
+func (mr *MockArtifactAPIMockRecorder) DeleteTag(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTag", reflect.TypeOf((*MockArtifactAPI)(nil).DeleteTag), arg0, arg1, arg2, arg3)
 }
 
 // Get mocks base method.
@@ -98,6 +126,36 @@ func (m *MockArtifactAPI) Get(arg0, arg1, arg2 string) (*harborapi.Artifact, err
 func (mr *MockArtifactAPIMockRecorder) Get(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockArtifactAPI)(nil).Get), arg0, arg1, arg2)
+}
+
+// GetFromTag mocks base method.
+func (m *MockArtifactAPI) GetFromTag(arg0, arg1, arg2 string) (*harborapi.Artifact, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFromTag", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*harborapi.Artifact)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFromTag indicates an expected call of GetFromTag.
+func (mr *MockArtifactAPIMockRecorder) GetFromTag(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromTag", reflect.TypeOf((*MockArtifactAPI)(nil).GetFromTag), arg0, arg1, arg2)
+}
+
+// GetTags mocks base method.
+func (m *MockArtifactAPI) GetTags(arg0, arg1, arg2 string) ([]harborapi.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTags", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]harborapi.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTags indicates an expected call of GetTags.
+func (mr *MockArtifactAPIMockRecorder) GetTags(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTags", reflect.TypeOf((*MockArtifactAPI)(nil).GetTags), arg0, arg1, arg2)
 }
 
 // GetVulnerabilities mocks base method.

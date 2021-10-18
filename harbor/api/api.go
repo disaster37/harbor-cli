@@ -5,8 +5,12 @@ type API interface {
 }
 
 type ArtifactAPI interface {
-	Scan(project string, repositoryName string, artifactName string) error
-	Get(project string, repositoryName string, artifactName string) (*Artifact, error)
-	GetVulnerabilities(project string, repositoryName string, artifactName string) (VulnerabilityReportResponse, error)
-	Delete(project string, repositoryName string, artifactName string) error
+	Scan(project, repositoryName, artifactName string) error
+	Get(project, repositoryName, artifactName string) (*Artifact, error)
+	GetFromTag(project, repositoryName, tagName string) (*Artifact, error)
+	GetVulnerabilities(project, repositoryName, artifactName string) (VulnerabilityReportResponse, error)
+	Delete(project, repositoryName, artifactName string) error
+	AddTag(project, repository, artifact, tag string) error
+	DeleteTag(project, repository, artifact, tag string) error
+	GetTags(project, repository, artifact string) (listTags []Tag, err error)
 }
