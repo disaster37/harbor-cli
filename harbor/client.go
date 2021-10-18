@@ -16,6 +16,7 @@ type Config struct {
 	DisableVerifySSL bool
 	CAs              []string
 	Timeout          time.Duration
+	Debug            bool
 }
 
 // Client contain the REST client and the API specification
@@ -38,7 +39,8 @@ func NewClient(cfg Config) (*Client, error) {
 		SetHostURL(cfg.Address).
 		SetBasicAuth(cfg.Username, cfg.Password).
 		SetHeader("Content-Type", "application/json").
-		SetTimeout(cfg.Timeout)
+		SetTimeout(cfg.Timeout).
+		SetDebug(cfg.Debug)
 
 	for _, path := range cfg.CAs {
 		restyClient.SetRootCertificate(path)
