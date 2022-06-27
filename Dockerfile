@@ -1,5 +1,5 @@
 
-FROM golang:1.16-alpine as builder
+FROM golang:1.18-alpine as builder
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 WORKDIR /go/src/app
 COPY . .
