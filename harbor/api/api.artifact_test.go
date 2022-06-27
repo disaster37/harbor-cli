@@ -33,7 +33,7 @@ func (t *APITestSuite) TestGet() {
 	// Not authorized
 	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts/artifactTest?with_scan_overview=true",
 		httpmock.NewStringResponder(403, ""))
-	artifact, err = t.client.Artifact().Get("projectTest", "repositoryTest", "artifactTest")
+	_, err = t.client.Artifact().Get("projectTest", "repositoryTest", "artifactTest")
 	assert.Error(t.T(), err)
 
 	// error use cases
@@ -73,7 +73,7 @@ func (t *APITestSuite) TestGetFromTag() {
 	// Not authorized
 	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts?q=tags%3DtestTag",
 		httpmock.NewStringResponder(403, ""))
-	artifact, err = t.client.Artifact().Get("projectTest", "repositoryTest", "testTag")
+	_, err = t.client.Artifact().Get("projectTest", "repositoryTest", "testTag")
 	assert.Error(t.T(), err)
 
 	// error use cases
@@ -251,7 +251,7 @@ func (t *APITestSuite) TestGetTags() {
 	// Not authorized
 	httpmock.RegisterResponder("GET", "http://localhost/projects/projectTest/repositories/repositoryTest/artifacts/artifactTest/tags",
 		httpmock.NewStringResponder(403, ""))
-	tags, err = t.client.Artifact().GetTags("projectTest", "repositoryTest", "artifactTest")
+	_, err = t.client.Artifact().GetTags("projectTest", "repositoryTest", "artifactTest")
 	assert.Error(t.T(), err)
 
 	// error use cases

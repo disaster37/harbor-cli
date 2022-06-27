@@ -47,7 +47,7 @@ func NewClient(cfg Config) (*Client, error) {
 		restyClient.SetRootCertificate(path)
 	}
 
-	if cfg.DisableVerifySSL == true {
+	if cfg.DisableVerifySSL {
 		restyClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	}
 
