@@ -13,6 +13,7 @@ import (
 const (
 	basePathArtifact       = "/projects/%s/repositories/%s/artifacts/%s"
 	basePathArtifactSearch = "/projects/%s/repositories/%s/artifacts"
+	headerVulnerabilities = "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0"
 )
 
 type ArtifactAPIImpl struct {
@@ -64,6 +65,7 @@ func (api *ArtifactAPIImpl) Get(project, repositoryName, artifactName string) (*
 
 	resp, err := api.client.R().
 		SetQueryParam("with_scan_overview", "true").
+		SetHeader("x-accept-vulnerabilities", headerVulnerabilities).
 		Get(path)
 	if err != nil {
 		return nil, err
@@ -141,7 +143,9 @@ func (api *ArtifactAPIImpl) GetVulnerabilities(project, repositoryName, artifact
 
 	path := fmt.Sprintf(basePathArtifact+"/additions/vulnerabilities", project, repositoryName, artifactName)
 
-	resp, err := api.client.R().Get(path)
+	resp, err := api.client.R().
+		SetHeader("x-accept-vulnerabilities", headerVulnerabilities).
+		Get(path)
 	if err != nil {
 		return nil, err
 	}

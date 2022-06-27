@@ -66,8 +66,8 @@ func checkScanVulnerability(project string, repositoryName string, artifactName 
 					isScan = false
 					break
 				}
-				time.Sleep(1 * time.Second)
 			}
+			time.Sleep(1 * time.Second)
 		}
 
 	}

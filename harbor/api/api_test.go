@@ -19,7 +19,7 @@ func TestAPISuite(t *testing.T) {
 
 func (t *APITestSuite) SetupTest() {
 	restyClient := resty.New().
-		SetHostURL("http://localhost").
+		SetBaseURL("http://localhost").
 		SetHeader("Content-Type", "application/json")
 	httpmock.ActivateNonDefault(restyClient.GetClient())
 

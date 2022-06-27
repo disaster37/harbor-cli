@@ -24,20 +24,15 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.16.7' # The Go version to download (if necessary) and use.
-    # Install all the dependencies
-    - name: Install dependencies
-      run: |
-        go version
-        go get -u golang.org/x/lint/golint   
+        go-version: '1.18' # The Go version to download (if necessary) and use.
     # Run build of the application
     - name: Run build
       run: make build
     # Run vet & lint on the code
-    - name: Run vet & lint
-      run: |
-        go vet .
-        golint .
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
     - name: Run tests
       run: make test
     - uses: codecov/codecov-action@v2
@@ -57,7 +52,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.16.7'
+          go-version: '1.18'
       - name: Inject version on CLI
         run:  sed -i "s/app.Version = \"develop\"/app.Version = \"${GITHUB_REF##*/}\"/" main.go
       - name: Run GoReleaser
