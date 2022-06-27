@@ -33,10 +33,6 @@ jobs:
       uses: golangci/golangci-lint-action@v3
       with:
         version: latest
-    - name: Run vet
-      run: |
-        go vet .
-        golint .
     - name: Run tests
       run: make test
     - uses: codecov/codecov-action@v2
