@@ -150,9 +150,9 @@ func run(args []string) error {
 					Usage:    "The tag from",
 					Required: true,
 				},
-				&cli.StringFlag{
-					Name:     "target-tag",
-					Usage:    "The tag to",
+				&cli.StringSliceFlag{
+					Name:     "target-tags",
+					Usage:    "The tags to",
 					Required: true,
 				},
 			},

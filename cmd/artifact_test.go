@@ -101,13 +101,21 @@ func (t CmdTestSuite) TestPromoteArtifact() {
 		Return(nil, nil)
 	t.mockArtifact.
 		EXPECT().
+		GetFromTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("testTag3")).
+		Return(nil, nil)
+	t.mockArtifact.
+		EXPECT().
 		AddTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("testTag2")).
+		Return(nil)
+	t.mockArtifact.
+		EXPECT().
+		AddTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("testTag3")).
 		Return(nil)
 	t.mockArtifact.
 		EXPECT().
 		DeleteTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("testTag1")).
 		Return(nil)
-	err := promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", "testTag2", t.client)
+	err := promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", []string{"testTag2", "testTag3"}, t.client)
 	assert.NoError(t.T(), err)
 
 	// Normale use case when target tag already in use and it alone
@@ -137,7 +145,7 @@ func (t CmdTestSuite) TestPromoteArtifact() {
 		EXPECT().
 		DeleteTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("testTag1")).
 		Return(nil)
-	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", "testTag2", t.client)
+	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", []string{"testTag2"}, t.client)
 	assert.NoError(t.T(), err)
 
 	// Normale use case when target tag already in use and it not alone
@@ -170,7 +178,7 @@ func (t CmdTestSuite) TestPromoteArtifact() {
 		EXPECT().
 		DeleteTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("testTag1")).
 		Return(nil)
-	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", "testTag2", t.client)
+	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "testTag1", []string{"testTag2"}, t.client)
 	assert.NoError(t.T(), err)
 
 	// When error on delete tag
@@ -186,7 +194,7 @@ func (t CmdTestSuite) TestPromoteArtifact() {
 		EXPECT().
 		DeleteTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("tagTest1")).
 		Return(errors.New("fake error"))
-	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "tagTest1", "tagTest2", t.client)
+	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "tagTest1", []string{"tagTest2"}, t.client)
 	assert.Error(t.T(), err)
 
 	// When error on add tag
@@ -198,7 +206,7 @@ func (t CmdTestSuite) TestPromoteArtifact() {
 		EXPECT().
 		AddTag(gomock.Eq("projectTest"), gomock.Eq("repositoryTest"), gomock.Eq("artifactTest"), gomock.Eq("tagTest2")).
 		Return(errors.New("fake error"))
-	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "tagTest1", "tagTest2", t.client)
+	err = promoteArtifact("projectTest", "repositoryTest", "artifactTest", "tagTest1", []string{"tagTest2"}, t.client)
 	assert.Error(t.T(), err)
 
 }

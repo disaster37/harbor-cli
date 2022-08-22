@@ -13,7 +13,7 @@ import (
 const (
 	basePathArtifact       = "/projects/%s/repositories/%s/artifacts/%s"
 	basePathArtifactSearch = "/projects/%s/repositories/%s/artifacts"
-	headerVulnerabilities = "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0"
+	headerVulnerabilities  = "application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0"
 )
 
 type ArtifactAPIImpl struct {
