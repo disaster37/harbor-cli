@@ -31,11 +31,13 @@ func PromoteArtifact(c *cli.Context) error {
 		return err
 	}
 
-	if err := promoteArtifact(c.String("project"), c.String("repository"), c.String("artifact"), c.String("source-tag"), c.String("target-tag"), client); err != nil {
+	if err := promoteArtifact(c.String("project"), c.String("repository"), c.String("artifact"), c.String("source-tag"), c.StringSlice("target-tags"), client); err != nil {
 		return err
 	}
 
-	log.Infof("Successfully promote artifact %s/%s/%s:%s to %s/%s/%s:%s", c.String("project"), c.String("repository"), c.String("artifact"), c.String("source-tag"), c.String("project"), c.String("repository"), c.String("artifact"), c.String("target-tag"))
+	for _, targetTag := range c.StringSlice("target-tags") {
+		log.Infof("Successfully promote artifact %s/%s/%s:%s to %s/%s/%s:%s", c.String("project"), c.String("repository"), c.String("artifact"), c.String("source-tag"), c.String("project"), c.String("repository"), c.String("artifact"), targetTag)
+	}
 	return nil
 }
 
@@ -62,37 +64,40 @@ func deleteArtifact(project, repository, artifact, tag string, client *harbor.Cl
 
 }
 
-func promoteArtifact(project, repository, artifactName, sourceTag, targetTag string, client *harbor.Client) error {
+func promoteArtifact(project, repository, artifactName, sourceTag string, targetTags []string, client *harbor.Client) error {
 
-	// Check if tag is already use on other artifact
-	// If tag already use and is the only tag, we delete the artifact
-	// Else we only delete the tag
-	artifact, err := client.API.Artifact().GetFromTag(project, repository, targetTag)
-	if err != nil {
-		return err
-	}
-	if artifact != nil {
-		log.Debugf("Found artifact %d with tag %s", artifact.ID, targetTag)
-		tags, err := client.API.Artifact().GetTags(project, repository, artifact.Digest)
+	for _, targetTag := range targetTags {
+
+		// Check if tag is already use on other artifact
+		// If tag already use and is the only tag, we delete the artifact
+		// Else we only delete the tag
+		artifact, err := client.API.Artifact().GetFromTag(project, repository, targetTag)
 		if err != nil {
 			return err
 		}
-		if len(tags) == 1 {
-			if err := client.API.Artifact().Delete(project, repository, artifact.Digest); err != nil {
+		if artifact != nil {
+			log.Debugf("Found artifact %d with tag %s", artifact.ID, targetTag)
+			tags, err := client.API.Artifact().GetTags(project, repository, artifact.Digest)
+			if err != nil {
 				return err
 			}
-			log.Infof("We delete artifact %d that use target tag %s", artifact.ID, targetTag)
-		} else {
-			if err := client.API.Artifact().DeleteTag(project, repository, artifact.Digest, targetTag); err != nil {
-				return err
+			if len(tags) == 1 {
+				if err := client.API.Artifact().Delete(project, repository, artifact.Digest); err != nil {
+					return err
+				}
+				log.Infof("We delete artifact %d that use target tag %s", artifact.ID, targetTag)
+			} else {
+				if err := client.API.Artifact().DeleteTag(project, repository, artifact.Digest, targetTag); err != nil {
+					return err
+				}
+				log.Infof("We delete tag %s on artifact %d", targetTag, artifact.ID)
 			}
-			log.Infof("We delete tag %s on artifact %d", targetTag, artifact.ID)
 		}
-	}
 
-	// Add the target tag
-	if err := client.API.Artifact().AddTag(project, repository, artifactName, targetTag); err != nil {
-		return err
+		// Add the target tag
+		if err := client.API.Artifact().AddTag(project, repository, artifactName, targetTag); err != nil {
+			return err
+		}
 	}
 
 	// Delete the source tag

@@ -100,15 +100,16 @@ We use it on Jenkins just before to start CD to deploy a unique tag
 Sample of command:
 
 ```bash
-harbor-cli --url https://harbor.company.com/api/v2.0 --username admin --password admin promote-artifact --project team1 --repository harbor --artifact build-PR-1 --source-tag build-PR-1 --target-tag v1.0.0
+harbor-cli --url https://harbor.company.com/api/v2.0 --username admin --password admin promote-artifact --project team1 --repository harbor --artifact build-PR-1 --source-tag build-PR-1 --target-tags v1.0.0 --target-tags latest
 ```
 
 You need to set following parameter:
 
 - **--project**: The project name
-- **--registry**: The registry name
+- **--repository**: The repository name
 - **--artifact**: The artifact name.
-- **--tag** (optionnal): The tag name.
+- **--source-tag** : The source tag name.
+- **--target-tags**: the list of target tags to add
 
 It return the following code:
 - `0`: all work fine

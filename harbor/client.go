@@ -41,7 +41,7 @@ func NewClient(cfg Config) (*Client, error) {
 		SetHeader("Content-Type", "application/json").
 		SetTimeout(cfg.Timeout).
 		SetDebug(cfg.Debug).
-		SetCookieJar(nil)		
+		SetCookieJar(nil)
 
 	for _, path := range cfg.CAs {
 		restyClient.SetRootCertificate(path)
